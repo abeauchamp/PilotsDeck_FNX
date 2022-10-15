@@ -26,6 +26,7 @@ namespace PilotsDeck_FNX2PLD
 
         public static void Main()
         {
+
             LoggerConfiguration loggerConfiguration = new LoggerConfiguration().WriteTo.File(logFilePath, rollingInterval: RollingInterval.Day, retainedFileCountLimit: 3);
             if (logLevel == "Warning")
                 loggerConfiguration.MinimumLevel.Warning();

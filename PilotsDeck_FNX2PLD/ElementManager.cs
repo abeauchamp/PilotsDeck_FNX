@@ -47,6 +47,7 @@ namespace PilotsDeck_FNX2PLD
             AddOffset(Patterns["FCU"], "fcuVsFma", -0x64, 4, "int");
 
 
+
             //ISIS
             AddOffset(Patterns["ISIS"], "isisStd", -0xC7, 1, "bool", 0);
             nextOffset = AddOffset(Patterns["ISIS"], "isisBaro", -0xEC, 8, "double", 6, nextOffset);
@@ -79,6 +80,8 @@ namespace PilotsDeck_FNX2PLD
             //COM active
             nextOffset = AddOffset(Patterns["COM_1"], "comActive", -0x24, 4, "int", 8, nextOffset);
             //AddOffset(Patterns["COM_2"], "comActive", -0x24, 4, "int");
+
+            nextOffset = AddOffset(Patterns["FCU"], "fcuSpd2", -0x6C, 8, "double", 10, nextOffset);
         }
 
         public void Dispose()
@@ -169,23 +172,27 @@ namespace PilotsDeck_FNX2PLD
                     result = "8888\n888*";
                 else
                 {
-                    if (isModeSpd)
-                        result = "SPD\n";
-                    else
-                        result = "MACH\n";
+                    //if (isModeSpd)
+                    //    result = "SPD\n";
+                    //else
+                    //    result = "MACH\n";
 
-                    if (isSpdManaged)
-                        result += "---*";
-                    else
-                    {
-                        if (isModeSpd)
-                            result += ((int)Math.Round(fcu.MemoryOffsets["fcuSpd"].GetValue())).ToString();
-                        else
-                            result += "." + ((int)Math.Round(fcu.MemoryOffsets["fcuSpd"].GetValue())).ToString();
-                    }
+                    //if (isSpdManaged)
+                    //    result += "---*";
+                    //else
+                    //{
+                    //    if (isModeSpd)
+                    //        result += ((int)Math.Round(fcu.MemoryOffsets["fcuSpd"].GetValue())).ToString();
+                    //    else
+                    //        result += "." + ((int)Math.Round(fcu.MemoryOffsets["fcuSpd"].GetValue())).ToString();
+                    //}
+
+                    result = ((int)Math.Round(fcu.MemoryOffsets["fcuSpd"].GetValue())).ToString();
+                    IPCOffsets["fcuSpd"].Value = result;
+                    IPCOffsets["fcuSpd2"].Value = result;
                 }
             }
-            IPCOffsets["fcuSpd"].Value = result;
+
 
             //HDG
             result = "";
@@ -195,10 +202,10 @@ namespace PilotsDeck_FNX2PLD
                     result = "888\n888*";
                 else
                 {
-                    if (isModeHdgVs)
-                        result = "HDG\n";
-                    else
-                        result = "TRK\n";
+                    //if (isModeHdgVs)
+                    //    result = "HDG\n";
+                    //else
+                    //    result = "TRK\n";
 
                     string hdgDisp = fcu.MemoryOffsets["fcuHdgDisplay"].GetValue()?.ToString("D3") ?? "000";
                     string hdgFma = fcu.MemoryOffsets["fcuHdgFma"].GetValue()?.ToString("D3") ?? "000";
@@ -206,9 +213,9 @@ namespace PilotsDeck_FNX2PLD
                     if (isHdgManaged)
                     {
                         if (hdgDisp != "000")
-                            result += hdgDisp + "*";
+                            result += hdgDisp;
                         else
-                            result += "---*";
+                            result += "---";
                     }
                     else
                     {
@@ -223,14 +230,14 @@ namespace PilotsDeck_FNX2PLD
             if (isFcuPowered)
             {
                 if (isLightTest)
-                    result = "88888*";
+                    result = "88888";
                 else
                 {
                     result = fcu.MemoryOffsets["fcuAlt"].GetValue()?.ToString("D5") ?? "00100";
-                    if (isAltHundred)
-                        result = result.Insert(2, " ");
-                    if (isAltManaged)
-                        result += "*";
+                    //if (isAltHundred)
+                    //    result = result.Insert(2, " ");
+                    //if (isAltManaged)
+                    //    result += "*";
                 }
             }
             IPCOffsets["fcuAlt"].Value = result;
@@ -243,17 +250,17 @@ namespace PilotsDeck_FNX2PLD
                     result = "888\n+8888";
                 else
                 {
-                    if (isModeHdgVs)
-                        result = "V/S\n";
-                    else
-                        result = "FPA\n";
+                    //if (isModeHdgVs)
+                    //    result = "V/S\n";
+                    //else
+                    //    result = "FPA\n";
 
                     int vs = fcu.MemoryOffsets["fcuVsDisplay"].GetValue() ?? 0;
                     if (isAltVs)
                         vs = fcu.MemoryOffsets["fcuVsFma"].GetValue() ?? 0;
 
                     if (!isAltVs && vs == 0)
-                        result += "-----";
+                        result = "-----";
                     else if (isModeHdgVs)
                     {
                         if (vs >= 0)
@@ -306,12 +313,18 @@ namespace PilotsDeck_FNX2PLD
             int valueActive = Patterns["COM_1"].MemoryOffsets["comActive"].GetValue() ?? 0;
 
             if (valueStandby > 0)
-                IPCOffsets["comStandby"].Value = valueStandby.ToString();
+            {
+                string freq = valueStandby / 1000 + "." + valueStandby % 1000;
+                IPCOffsets["comStandby"].Value = freq;
+            }
             else
                 IPCOffsets["comStandby"].Value = "";
 
             if (valueActive > 0)
-                IPCOffsets["comActive"].Value = valueActive.ToString();
+            {
+                string freq = valueActive / 1000 + "." + valueActive % 1000;
+                IPCOffsets["comActive"].Value = freq;
+            }
             else
                 IPCOffsets["comActive"].Value = "";
         }

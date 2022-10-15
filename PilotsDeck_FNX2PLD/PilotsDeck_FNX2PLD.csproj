@@ -32,8 +32,4 @@
     </None>
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="powershell -ExecutionPolicy Unrestricted -file &quot;$(ProjectDir)CopyToMSFS.ps1&quot; $(ConfigurationName)" />
-  </Target>
-
 </Project>

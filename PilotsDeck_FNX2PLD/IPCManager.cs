@@ -84,7 +84,7 @@ namespace PilotsDeck_FNX2PLD
 
         public static bool IsAircraftFenix()
         {
-            return currentAirString.Contains("fnx320");
+            return currentAirString.Contains("FNX320");
         }
 
         public static bool RefreshCurrentAircraft()
