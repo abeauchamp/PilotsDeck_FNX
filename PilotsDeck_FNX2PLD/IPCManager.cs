@@ -84,7 +84,7 @@ namespace PilotsDeck_FNX2PLD
 
         public static bool IsAircraftFenix()
         {
-            return currentAirString.Contains("FNX320");
+            return currentAirString.Contains("FNX320", StringComparison.OrdinalIgnoreCase);
         }
 
         public static bool RefreshCurrentAircraft()
@@ -107,7 +107,7 @@ namespace PilotsDeck_FNX2PLD
 
                 if (airString != null && airString.Length > 0)
                 {
-                    if (!airString.Contains("fnx320") && !Program.ignoreCurrentAC)
+                    if (!airString.Contains("FNX320", StringComparison.OrdinalIgnoreCase) && !Program.ignoreCurrentAC)
                     {
                         Log.Logger.Warning("IPCManager: Current Aircraft is not a Fenix 320!");
                         return false;
